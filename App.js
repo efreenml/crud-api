@@ -1,11 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { Button, Provider as PaperProvider } from 'react-native-paper';
 import { StyleSheet, Text, View } from "react-native";
 
 import { NativeRouter, Route, Link } from "react-router-native";
 import Create from "./src/components/Create";
-import Read from './src/components/Read';
+import List from './src/components/List';
 import Microservice from './src/components/MicroService';
 import Update from './src/components/Update';
+import {firebaseApp} from "./src/utils/firebase";
+import * as firebase from "firebase";
 
 
 
@@ -52,32 +55,47 @@ function Topics({ match }) {
 }
 
 function App() {
-  const [uri, setUri] = useState("");
-  const [user, setUser] = useState([]);
+  const [uri, setUri] = useState(null);
+  const [user, setUser] = useState({});
+  useEffect(() => {
+    firebase.auth().onAuthStateChanged((user) => {
+      console.log(user);
+    })
+  }, []);
   return (
-    <NativeRouter>
-      <View style={styles.container}>
-        <View style={styles.nav}>
-          <Link to="/" underlayColor="#f0f4f7" style={styles.navItem}>
-            <Text>Microservice rout</Text>
-          </Link>
-          <Link to="/create" underlayColor="#f0f4f7" style={styles.navItem}>
-            <Text>Creat</Text>
-          </Link>
-          <Link to="/read" underlayColor="#f0f4f7" style={styles.navItem}>
-            <Text>view</Text>
-          </Link>
-          <Link to="/Update" underlayColor="#f0f4f7" style={styles.navItem}>
-            <Text>edit</Text>
-          </Link>
-        </View>
+    
+    <PaperProvider>
+      
+      <NativeRouter>
+        <View style={styles.container}>
+          <View style={styles.nav}>
+            <Link to="/" underlayColor="#f0f4f7" style={styles.navItem}>
+              <Button
+                icon="cog"
+              >
+                Config
+              </Button>
+            </Link>
+            {uri != null &&(
+              <>
+              <Link to="/usuarios" underlayColor="#f0f4f7" style={styles.navItem}>
+              <Button
+                icon="account-multiple"
+              >
+                Usuarios
+              </Button>
+              </Link>
+              </>
+            )}
+          </View>
 
-        <Route exact path="/" component={() => <Microservice setUri={setUri} />} style={styles.center} />
-        <Route path="/create" component={() => <Create uri={uri} />}/>
-        <Route path="/read" component={() => <Read uri={uri} setUser={setUser} />} />
-        <Route path="/Update" component={() => <Update uri={uri} user={user} />} />
-      </View>
-    </NativeRouter>
+          <Route exact path="/" component={() => <Microservice uri={uri} setUri={setUri} />} style={styles.center} />
+          <Route path="/create" component={() => <Create uri={uri} />}/>
+          <Route path="/usuarios" component={() => <List uri={uri} setUser={setUser} />} />
+          <Route path="/update" component={() => <Update uri={uri} user={user} />} />
+        </View>
+      </NativeRouter>
+    </PaperProvider>
   );
 }
 

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "992758256484",
+    "project_id": "apiusuarios-99139",
+    "storage_bucket": "apiusuarios-99139.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:992758256484:android:8755a13144b8d74c8fe071",
+        "android_client_info": {
+          "package_name": "mx.ipn.escom"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "992758256484-0tvge66754huo04siv93uuk60nac1e2k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCziIdblW7eviXqTXScW133Oc8hllpGSEI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "992758256484-0tvge66754huo04siv93uuk60nac1e2k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

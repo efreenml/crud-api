@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "curd_didier",
-    "slug": "curd_didier",
+    "name": "crud_usuarios",
+    "slug": "crud_usuarios",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
