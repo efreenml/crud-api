@@ -5,7 +5,7 @@ import { NativeRouter, Route, Link } from "react-router-native";
 import Create from "./src/components/Create";
 import Read from './src/components/Read';
 import Microservice from './src/components/MicroService';
-
+import Update from './src/components/Update';
 
 
 
@@ -53,6 +53,7 @@ function Topics({ match }) {
 
 function App() {
   const [uri, setUri] = useState("");
+  const [user, setUser] = useState([]);
   return (
     <NativeRouter>
       <View style={styles.container}>
@@ -60,17 +61,21 @@ function App() {
           <Link to="/" underlayColor="#f0f4f7" style={styles.navItem}>
             <Text>Microservice rout</Text>
           </Link>
-          <Link to="/about" underlayColor="#f0f4f7" style={styles.navItem}>
+          <Link to="/create" underlayColor="#f0f4f7" style={styles.navItem}>
             <Text>Creat</Text>
           </Link>
-          <Link to="/topics" underlayColor="#f0f4f7" style={styles.navItem}>
+          <Link to="/read" underlayColor="#f0f4f7" style={styles.navItem}>
             <Text>view</Text>
+          </Link>
+          <Link to="/Update" underlayColor="#f0f4f7" style={styles.navItem}>
+            <Text>edit</Text>
           </Link>
         </View>
 
         <Route exact path="/" component={() => <Microservice setUri={setUri} />} style={styles.center} />
-        <Route path="/about" component={() => <Create uri={uri} />}/>
-        <Route path="/topics" component={() => <Read uri={uri} />} />
+        <Route path="/create" component={() => <Create uri={uri} />}/>
+        <Route path="/read" component={() => <Read uri={uri} setUser={setUser} />} />
+        <Route path="/Update" component={() => <Update uri={uri} user={user} />} />
       </View>
     </NativeRouter>
   );

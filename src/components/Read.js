@@ -3,8 +3,9 @@ import { Card, Title, Paragraph, Text, Button } from 'react-native-paper';
 import {StyleSheet, View} from 'react-native';
 import { map } from "lodash";
 
+export default function Read({uri, setUser}) {
 
-export default function Read({uri}) {
+
     const getData = () => {
         return fetch(uri+"/usuarios")
           .then((response) => response.json())
@@ -44,12 +45,20 @@ export default function Read({uri}) {
         <View>
             <Text>Hola</Text>
             {map(data, (oso, value) => (
-                <Card key = {oso.id}>
+                <Card key = {oso.id}
+                >
                     <Card.Content>
                     <Title>{oso.name}</Title>
                     <Paragraph> {oso.apPaterno} </Paragraph>
                     <Paragraph> {oso.apMaterno} </Paragraph>
                     <Paragraph> {oso.email} </Paragraph>
+                    <Button 
+                        icon="account-multiple-minus" 
+                        mode="contained" 
+                        onPress={() => setUser(oso)}
+                        style = {styles.edit}
+                    >
+                    edit</Button>
                     <Button 
                         icon="account-multiple-minus" 
                         mode="contained" 
@@ -67,5 +76,8 @@ export default function Read({uri}) {
 const styles = StyleSheet.create({
     delete: {
         backgroundColor: "red"
+    },
+    edit: {
+        backgroundColor: "blue"
     }
 })
