@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, Provider as PaperProvider } from 'react-native-paper';
+import { Appbar, Button, Provider as PaperProvider } from 'react-native-paper';
 import { StyleSheet, Text, View } from "react-native";
 
 import { NativeRouter, Route, Link } from "react-router-native";
@@ -57,15 +57,11 @@ function Topics({ match }) {
 function App() {
   const [uri, setUri] = useState(null);
   const [user, setUser] = useState({});
-  useEffect(() => {
-    firebase.auth().onAuthStateChanged((user) => {
-      console.log(user);
-    })
-  }, []);
   return (
-    
     <PaperProvider>
-      
+      <Appbar.Header>
+        <Appbar.Content title="Demo microservicios"/>
+      </Appbar.Header>
       <NativeRouter>
         <View style={styles.container}>
           <View style={styles.nav}>

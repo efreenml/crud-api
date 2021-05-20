@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Picker, StyleSheet, Text } from 'react-native';
-import {TextInput, Button} from 'react-native-paper';
+import { StyleSheet, Text, View } from 'react-native';
+import { TextInput, Button, Avatar } from 'react-native-paper';
 import DropDown from 'react-native-paper-dropdown';
 import { useHistory } from 'react-router';
 import { showToast } from './helpers';
@@ -33,6 +33,8 @@ export default function Create({uri}) {
             return [];
         }
     };
+
+
     const createFetch = async () => {
         setLoading(true);
         try {
@@ -130,12 +132,21 @@ export default function Create({uri}) {
             />
             
             <Button 
-            icon="content-save" 
-            mode="contained" 
-            onPress={() => createFetch()}
-            style={styles.button}
-            >
-            Guardar
+                icon="content-save" 
+                mode="contained" 
+                onPress={() => createFetch()}
+                style={styles.button}
+                >
+                Guardar
+            </Button>
+            
+            <Button 
+                icon="cancel" 
+                mode="outlined" 
+                onPress={() => history.replace("/usuarios")}
+                style={styles.button}
+                >
+                Cancelar
             </Button>
             </>
             )}

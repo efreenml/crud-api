@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import {StyleSheet } from 'react-native';
-import {Text, TextInput, Button} from 'react-native-paper';
+import {StyleSheet, TouchableOpacity, View } from 'react-native';
+import {Text, TextInput, Button, Avatar} from 'react-native-paper';
 import DropDownPicker from 'react-native-dropdown-picker';
 import {  isEmpty } from 'lodash';
 import  { useHistory } from 'react-router-dom';
 import {showToast} from "./helpers";
 import DropDown from 'react-native-paper-dropdown';
+import * as firebase from "firebase";
+import * as Permissions from "expo-permissions";
+import * as ImagePicker from "expo-image-picker";
+
 
 export default function Update({uri, user}) {
     const history = useHistory();
@@ -13,6 +17,7 @@ export default function Update({uri, user}) {
     const [apellido1, setApellido1] = useState(user.apPaterno);
     const [apellido2, setApellido2] = useState(user.apMaterno);
     const [email, setEmail] = useState(user.email);
+    const [selectedImage, setSelectedImage] = useState(null);
     const [roles, setRoles] = useState([]);
     const [selectedRol, setSelectedRol] = useState(null);
     const [showDropDown, setShowDropDown] = useState(false);
@@ -22,6 +27,7 @@ export default function Update({uri, user}) {
         }
         getRoles();
     }, []);
+    
     const getRoles = async () => {
         try {
             let res = await fetch(uri + "/roles");
@@ -37,6 +43,33 @@ export default function Update({uri, user}) {
             return [];
         }
     };
+
+    const changeAvatar = async () => {
+        const resultPermission = await Permissions.askAsync(Permissions.MEDIA_LIBRARY);
+        const resultPCamera = resultPermission.permissions.mediaLibrary.status;
+        if(resultPCamera == "denied") {
+            showToast("Debe aceptar los permisos de galería");
+        } else {
+            const result = await ImagePicker.launchImageLibraryAsync({
+                allowsEditing: true,
+                aspect: [4, 4]
+            });
+            if (result.cancelled) {
+                showToast("No se seleccionó una imagen");
+            } else {
+                uploadImage(result.uri).then((f) => {
+                    user.urlAvatar = `avatar/${user.id}`;
+                    showToast("Imagen cargada con éxito");
+                })
+            }
+        }
+    }
+    const uploadImage = async(uri) => {
+        const response = await  fetch(uri);
+        const blob = await response.blob();
+        const ref = firebase.storage().ref().child(`avatar/${user.id}`);
+        return ref.put(blob);
+    }
     const save = async () => {
         try {
             await fetch(`${uri}/usuarios/${user.id}`, {
@@ -50,10 +83,10 @@ export default function Update({uri, user}) {
                     apPaterno: apellido1.trim(),
                     apMaterno: apellido2.trim(),
                     email: email.trim(),
+                    urlAvatar: user.urlAvatar != null? user.urlAvatar : null,
                     rol: selectedRol != null? {
                         id: selectedRol
-                    } 
-                    : null,
+                    } : null
                 })
             });
             showToast("Éxito actualizando usuario");
@@ -66,6 +99,26 @@ export default function Update({uri, user}) {
 
     return (
         <>
+            {selectedImage? (
+                <Avatar.Image
+                size={48} 
+                    source={{
+                        uri: selectedImage,
+                    }}
+                />
+            ): (
+                <TouchableOpacity
+                    onPress={() => {
+                        changeAvatar();
+                    }}
+                >
+                    <View>
+                            <Avatar.Icon size={48} icon="camera"
+                            />
+                            <Text>Seleccione</Text>
+                    </View>
+                </TouchableOpacity>
+            )}
             <TextInput
                 label = "Nombre"
                 style = {styles.input}
@@ -115,6 +168,15 @@ export default function Update({uri, user}) {
             style={styles.button}
             >
             Actualizar
+            </Button>
+            
+            <Button 
+                icon="content-save" 
+                mode="outlined" 
+                onPress={() => history.replace("/usuarios")}
+                style={styles.button}
+                >
+                Cancelar
             </Button>
         </>
     )

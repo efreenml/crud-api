@@ -5,11 +5,13 @@ import {
   Button,
   Colors,
   Subheading,
+  Avatar,
 } from "react-native-paper";
 import { useHistory } from "react-router-dom";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, Text, View , Image} from "react-native";
 import { map } from "lodash";
 import { showToast } from "./helpers";
+import * as firebase from "firebase";
 
 export default function List({ uri, setUser }) {
   const [data, setData] = useState([]);
@@ -22,11 +24,20 @@ export default function List({ uri, setUser }) {
     try {
       let res = await fetch(uri + "/usuarios");
       let json = await res.json();
-      setData(json);
+      updateUserUrl(json);
     } catch (error) {
       return [];
     }
   };
+  const updateUserUrl = async (users) => {
+    for (let user of users) {
+      if (user.urlAvatar != null) {
+        const imageRef = await firebase.storage().ref(user.urlAvatar).getDownloadURL();
+        user.downloadUrl = imageRef;
+      }
+    }
+    setData(users);
+  }
   const deleteUser = async (id) => {
       try {
         let result = await fetch(uri + "/usuarios/" + id, {
@@ -76,11 +87,12 @@ export default function List({ uri, setUser }) {
         </View>
         
       </View>
-      <ScrollView style={{ maxHeight: 680 }}>
+      <ScrollView style={{ maxHeight: 600 }}>
         {map(data, (oso) => {
           return (
             <Card key={oso.id} style={styles.card}>
               <Card.Content>
+                {oso.downloadUrl &&<Avatar.Image source={{ uri: oso.downloadUrl }} size={128} /> }
                 <Subheading>Nombre: <Text style={styles.focus}>{oso.nombre}</Text></Subheading>
                 <Subheading>Primer apellido:  <Text style={styles.focus}>{oso.apPaterno}</Text> </Subheading>
                 <Subheading>Segundo apellido:  <Text style={styles.focus}>{oso.apMaterno}</Text></Subheading>
