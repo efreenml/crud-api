@@ -59,15 +59,14 @@ export default function Create({uri}) {
             const delay = (timeout, error) => new Promise((resolve, reject) => setTimeout(() => reject(error), timeout));
             let result = await Promise.race([
                 fetchPromise,
-                delay(3 * 1000, 'Timeout Error')
+                delay(5 * 1000, 'Error de red')
             ]);
             let body = await result.json();
-            if(result.status !=200) {
+            if (result.status !=200) {
                 showToast(body.error);
                 setLoading(false);
             } else {
                 showToast("Éxito creando usuario");
-
                 setLoading(false);
                 history.replace("/usuarios");
             }
