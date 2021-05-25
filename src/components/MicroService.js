@@ -1,26 +1,45 @@
-import React, {useState} from 'react';
-import {StyleSheet} from 'react-native';
+import React, { useState} from 'react';
+import {Image, StyleSheet, Text, View} from 'react-native';
 import {TextInput, Button} from 'react-native-paper';
+import { useHistory } from 'react-router';
 
-export default function MicroService({setUri}) {
+export default function MicroService({uri, setUri}) {
     const [text, setText] = useState(null);
+    const history = useHistory();
     return (
         <>
-            <TextInput
-                label = "Microservice route"
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: 80 }}>
+                <Image
+                style={styles.logo}
+                    source={require('../../assets/logoESCOM.png')}
+                />
+            </View>
+            <View style={{  marginTop: 80 }}>
+                <TextInput
+                label = "http://"
+                placeholder ="127.0.0.1:8080"
                 style = {styles.input}
                 value = {text}
-                onChangeText={text => setText(text)}
-
-            />
-            <Button 
-            icon="content-save" 
-            mode="contained" 
-            onPress={() => setUri(text)}
-            style={styles.button}
-            >
-            Save
-            </Button>
+                onChangeText={t => setText(t)}
+                />
+                {uri != null && <Text>Configurada: {uri} </Text>}
+                <Button 
+                icon="content-save" 
+                mode="contained" 
+                onPress={() => {
+                    if (text!=null && text != "") {
+                        let fullUrl = "http://" + text;
+                        setUri(fullUrl);
+                        history.push("/usuarios");
+                    }
+                }
+                }
+                style={styles.button}
+                >
+                Guardar
+                </Button>
+            </View>
+            
         </>
     )
 }
@@ -30,6 +49,11 @@ const styles = StyleSheet.create({
       marginTop: 20
     },
     button: {
-        marginTop: 15
-    }
+        marginTop: 60
+    },
+    logo: {
+      height: 220,
+      width:240,
+      resizeMode: 'center',
+    },
 })
